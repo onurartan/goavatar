@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  image-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: go-avatar-api
+    restart: always
+    develop:
+     watch:
+     - action: rebuild
+     - path: .
+
