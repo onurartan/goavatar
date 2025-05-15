@@ -87,7 +87,8 @@ func main() {
 	printSignature()
 	go cleanupVisitors()
 
-	err := loadFontOnce("fonts/Inter_24pt-Medium.ttf")
+	// err := loadFontOnce("fonts/Inter_24pt-Medium.ttf")
+	err := loadFontOnce("fonts/Inter_28pt-SemiBold.ttf")
 	if err != nil {
 		log.Fatalf("Failed to load font: %v", err)
 	}

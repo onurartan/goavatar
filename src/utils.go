@@ -257,7 +257,7 @@ func generateSVG(size int, name string, color1, color2 color.RGBA, text string, 
 func drawText(img *image.RGBA, text string, textColor color.Color, size int) {
 	col := textColor
 
-	fontSize := int(float64(size) / 3)
+	fontSize := int(float64(size) / 2)
 	loadedFont := getFont("fonts/Inter_24pt-Medium.ttf", fontSize)
 
 	if loadedFont == nil {
@@ -330,8 +330,6 @@ func imageResponse(name string, w http.ResponseWriter, r *http.Request, _initial
 		size = widthInt
 	}
 
-	
-
 	var color1, color2 color.RGBA
 
 	if aType == "color" {
@@ -343,7 +341,7 @@ func imageResponse(name string, w http.ResponseWriter, r *http.Request, _initial
 
 	textColor := determineTextColor(color1, color_QUERY)
 
-	rounded := 0 // 
+	rounded := 0 //
 
 	if typeParam == "svg" {
 		svg := generateSVG(size, name, color1, color2, initials, rounded, color_QUERY, aType)
