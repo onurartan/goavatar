@@ -18,6 +18,6 @@ RUN go mod download
 COPY . .
 RUN go build -o app ./src
 
-EXPOSE 8080
+EXPOSE 9980
 
 CMD ["./app"]
