@@ -330,7 +330,7 @@ func imageResponse(name string, w http.ResponseWriter, r *http.Request, _initial
 		size = widthInt
 	}
 
-	rounded := 0
+	
 
 	var color1, color2 color.RGBA
 
@@ -342,6 +342,8 @@ func imageResponse(name string, w http.ResponseWriter, r *http.Request, _initial
 	}
 
 	textColor := determineTextColor(color1, color_QUERY)
+
+	rounded := 0 // 
 
 	if typeParam == "svg" {
 		svg := generateSVG(size, name, color1, color2, initials, rounded, color_QUERY, aType)
