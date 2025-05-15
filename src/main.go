@@ -80,6 +80,6 @@ func main() {
 
 	handlerWithCORS := corsMiddleware(mux)
 
-	fmt.Println("Server running at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", handlerWithCORS))
+	fmt.Println("Server running at http://localhost:9980")
+	log.Fatal(http.ListenAndServe(":9980", handlerWithCORS))
 }
