@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "9980:9980"
     container_name: go-avatar-api
     restart: always
     develop:
