@@ -38,17 +38,34 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func avatarHandler(w http.ResponseWriter, r *http.Request) {
-	name := strings.TrimPrefix(r.URL.Path, "/avatar/")
+	pathname := strings.TrimPrefix(r.URL.Path, "/avatar/")
+	segments := strings.Split(pathname, "/")
+
+	if len(segments) != 1 || segments[0] == "" {
+		writeError(w, http.StatusNotFound, "Invalid path. Use `/avatar/:name`")
+		return
+	}
+
+	name := segments[0]
 	if name == "" {
 		// http.Error(w, "Missing name parameter", http.StatusBadRequest)
 		writeError(w, http.StatusBadRequest, "Missing name parameter = `/avatar/:name`")
 		return
 	}
-	imageResponse(name, w, r)
+	imageResponse(name, w, r, false)
 }
 
 func githubAvatarHandler(w http.ResponseWriter, r *http.Request) {
-	username := strings.TrimPrefix(r.URL.Path, "/avatar/github/")
+	pathname := strings.TrimPrefix(r.URL.Path, "/avatar/github/")
+	segments := strings.Split(pathname, "/")
+
+	if len(segments) != 1 || segments[0] == "" {
+		writeError(w, http.StatusNotFound, "Invalid path. Use `/avatar/github/:name`")
+		return
+	}
+
+	username := segments[0]
+
 	if username == "" {
 		// http.Error(w, "Missing GitHub username", http.StatusBadRequest)
 		writeError(w, http.StatusBadRequest, "Missing GitHub username = `/avatar/github/:username`")
@@ -63,23 +80,32 @@ func githubAvatarHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	imageResponse(name, w, r)
+	imageResponse(name, w, r, true)
 }
 
 func main() {
 	printSignature()
+	go cleanupVisitors()
+
+	err := loadFontOnce("fonts/Inter_24pt-Medium.ttf")
+	if err != nil {
+		log.Fatalf("Failed to load font: %v", err)
+	}
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "src/static/index.html")
-	})
+	// *If you want to use the Home Page index.html template
+	// mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	http.ServeFile(w, r, "src/static/index.html")
+	// })
 
 	mux.HandleFunc("/avatar/", avatarHandler)
 	mux.HandleFunc("/avatar/github/", githubAvatarHandler)
 
-	handlerWithCORS := corsMiddleware(mux)
+	// handlerWithCORS := corsMiddleware(mux) //* old version
+
+	handlerWithRateLimit := rateLimitMiddleware(corsMiddleware(mux))
 
 	fmt.Println("Server running at http://localhost:9980")
-	log.Fatal(http.ListenAndServe(":9980", handlerWithCORS))
+	log.Fatal(http.ListenAndServe(":9980", handlerWithRateLimit))
 }
